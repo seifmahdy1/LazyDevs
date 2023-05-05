@@ -17,7 +17,7 @@ int main(void){
     x=xDistance(generate); // these two lines actually generate the numbers that will be used in the setPosition method of the food object.
     y=yDistance(generate);
     food.setPosition(x,y);
-    while (gameWindow.isOpen()){
+    while (gameWindow.isOpen()){ // the next 8 lines are for the gameloop and for the displaying of the food in the randomly generated coordinates.
         sf::Event evnt;
         while (gameWindow.pollEvent(evnt)){
             if (evnt.type==sf::Event::Closed){
