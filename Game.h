@@ -1,37 +1,21 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <random>
 
 using namespace std;
-
-class Food {
-private:
-    int x;
-    int y;
-    int grid_size;
-    float radius;
+class Score {
+    int score = 0;
 public:
-    Food(int grid_size) : grid_size(grid_size) {
-        std::random_device rand;
-        std::mt19937 generate(rand());
-        std::uniform_int_distribution<> distanceX(0, grid_size - 50);
-        std::uniform_int_distribution<> distanceY(0, grid_size - 50);
-        x = distanceX(generate);
-        y = distanceY(generate);
+    int getScore() {
+        return score;
     }
-    float getRadius() {
-        return radius;
-    }
-    int getFoodX() {
-        return x;
-    }
-    int getFoodY() {
-        return y;
-    }
-    void setRadius(float radius1) {
-        radius = radius1;
+    void addScore() {
+        score += 10;
     }
 };
+
+
 
 class snakePart {
 public:
@@ -39,8 +23,8 @@ public:
     int posY;
     int direction;
     sf::Sprite* s; //this is how the snake looks
-    class node* leftLink; //this is implementation of the linked list data structure
-    class node* rightLink;
+    class snakePart* leftLink; //this is implementation of the linked list data structure
+    class snakePart* rightLink;
 };
 typedef class snakePart* SNAKEPART;
 enum direction {
@@ -49,11 +33,39 @@ enum direction {
 //this is to set each of the directions with a number so we can then put it in the class snakePart in the part called direction 
 // where north=0, south =1, west =2, east =3 
 class Game {
-private:
-    void updateGame(); //function that updates the gmae contents
-    void renderGame();//function that renders the game
-    SNAKEPART insertHead(SNAKEPART head, sf::Sprite* sprite);
-    SNAKEPART deleteTail(SNAKEPART tail);
+private: 
+    
+    int speed = 400; //to call the updateGame function after 400 while loop iterations so the animation isnt very fast
+    int count = 0; //count is used to check if we reached the speed
+    Score gameScore;
+    SNAKEPART head, tail, current;
+    sf::RenderWindow gameWindow;
+    sf::Sprite snakeSprite; //snake sprite
+    sf::Texture spriteSheet; //sprite sheet
+    sf::Vector2f foodPos;
+    sf::Sprite food;
+    sf::Event event;
+    sf::Text Score;
+    sf::Font scoreFont;
+    sf::Texture gameBackGround;
+    sf::Sprite BackGround;
+    sf::Vector2f getFoodCoords();
+    sf::Sound sound;
+    sf::SoundBuffer soundBuffer;
+    void updateGame(); 
+    void renderGame();
+    void startGame();
+    void loadSprite();
+    void loadSound();
+    SNAKEPART insertHead(SNAKEPART head, sf::Sprite* sprite); //function to insert the head to make it as if the snake is moving
+    SNAKEPART deleteTail(SNAKEPART tail); //function to delete the tail after inserting the new tail to make the snake "move"
+    void processEvents(); //function to process any event such as input
+    void setTailSprite(SNAKEPART head, sf::Sprite* sp);
+    void setHeadSprite(SNAKEPART node, sf::Sprite* sp);
+    void headTouchedFood();
+    bool foodIsTouched(SNAKEPART head, sf:: Sprite* food);
+    void checkCollision(SNAKEPART head, sf::RenderWindow* gameWindow);
 public:
     void runGame();//the function that runs the game
 };
+
